@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Viztral.ai - Deployment Guide</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-main: #0B0F19;
+      --bg-card: #151B2C;
+      --bg-code: #1E2638;
+      --accent: #38BDF8;
+      --accent-hover: #0EA5E9;
+      --text-primary: #F8FAFC;
+      --text-secondary: #94A3B8;
+      --text-muted: #64748B;
+      --success: #34D399;
+      --border-color: rgba(56, 189, 248, 0.15);
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.7);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+    }
+
+    .container {
+      max-width: 800px;
+      width: 100%;
+      animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .logo {
+      height: 40px;
+      width: auto;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      background: linear-gradient(135deg, #FFFFFF 30%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      margin-top: 8px;
+      font-weight: 400;
+    }
+
+    /* Dashboard Overview */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 30px;
+    }
+
+    .overview-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .overview-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--accent);
+    }
+
+    .overview-card.destination::before {
+      background: var(--success);
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .card-value {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      word-break: break-all;
+    }
+
+    .card-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Steps Section */
+    .step-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+    }
+
+    .step-card:hover {
+      border-color: rgba(56, 189, 248, 0.35);
+      transform: translateY(-2px);
+    }
+
+    .step-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .step-number {
+      background-color: rgba(56, 189, 248, 0.1);
+      color: var(--accent);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .step-title-area {
+      flex-grow: 1;
+    }
+
+    .step-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .step-desc {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      margin-top: 4px;
+    }
+
+    /* Code Block Area */
+    .code-container {
+      background-color: var(--bg-code);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin: 16px 0;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    code {
+      font-family: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      color: #38BDF8;
+      font-size: 0.9rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .copy-btn {
+      background-color: rgba(255, 255, 255, 0.08);
+      border: none;
+      color: var(--text-secondary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      margin-left: 12px;
+    }
+
+    .copy-btn:hover {
+      background-color: var(--accent);
+      color: var(--bg-main);
+    }
+
+    .copy-btn.copied {
+      background-color: var(--success);
+      color: var(--bg-main);
+    }
+
+    /* Interactive Checklist */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .checkbox-container input {
+      display: none;
+    }
+
+    .checkmark {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--text-muted);
+      border-radius: 6px;
+      display: inline-block;
+      position: relative;
+      transition: all 0.2s ease;
+    }
+
+    .checkbox-container input:checked + .checkmark {
+      border-color: var(--success);
+      background-color: var(--success);
+    }
+
+    .checkbox-container input:checked + .checkmark::after {
+      content: '';
+      position: absolute;
+      left: 7px;
+      top: 3px;
+      width: 5px;
+      height: 10px;
+      border: solid var(--bg-main);
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+
+    .step-card.completed {
+      border-color: rgba(52, 211, 153, 0.3);
+      background-color: rgba(21, 27, 44, 0.6);
+    }
+
+    .step-card.completed .step-number {
+      background-color: rgba(52, 211, 153, 0.1);
+      color: var(--success);
+      border-color: rgba(52, 211, 153, 0.2);
+    }
+
+    .step-card.completed .step-title {
+      color: var(--text-secondary);
+      text-decoration: line-through;
+    }
+
+    /* Quick Info Banner */
+    .info-banner {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%);
+      border: 1px dashed rgba(56, 189, 248, 0.3);
+      border-radius: 12px;
+      padding: 18px 24px;
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .info-icon {
+      font-size: 1.5rem;
+      color: var(--accent);
+    }
+
+    .info-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .info-text strong {
+      color: var(--text-primary);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Repository Relationship & Workflow Styling */
+    .repo-relation-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow);
+    }
+    
+    .repo-relation-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .repo-flow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .repo-box {
+      flex: 1;
+      background: var(--bg-code);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .repo-box:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56, 189, 248, 0.2);
+    }
+
+    .repo-box h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .repo-box p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .flow-arrow {
+      font-size: 1.5rem;
+      color: var(--text-muted);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.15); }
+    }
+
+    .guide-details {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 16px;
+    }
+
+    .guide-details ul {
+      margin-left: 20px;
+      margin-top: 8px;
+    }
+
+    .guide-details li {
+      margin-bottom: 8px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .badge-edit {
+      background-color: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .badge-deploy {
+      background-color: rgba(52, 211, 153, 0.15);
+      color: var(--success);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .overview-grid, .repo-flow {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+      }
+      .flow-arrow {
+        transform: rotate(90deg);
+      }
+      body {
+        padding: 20px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo-container">
+        <!-- SVG Logo mimicking viztral logo -->
+        <svg class="logo" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 22H22L12 2Z" stroke="#38BDF8" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M12 8L6 20H18L12 8Z" fill="#38BDF8" fill-opacity="0.2" stroke="#38BDF8" stroke-width="1.5" stroke-linejoin="round"/>
+          <circle cx="12" cy="14" r="2" fill="#38BDF8"/>
+        </svg>
+        <h1>Viztral.ai</h1>
+      </div>
+      <p class="subtitle">Official Website Deployment Protocol & Guide</p>
+    </header>
+
+    <!-- Source / Destination Overview -->
+    <div class="overview-grid">
+      <div class="overview-card">
+        <div class="card-label">Development Workspace (Source)</div>
+        <div class="card-value">/website</div>
+        <div class="card-meta">Location: <code>/Users/ravikuruganthy/myApps/website</code></div>
+      </div>
+      <div class="overview-card destination">
+        <div class="card-label">Production Workspace (Deployment)</div>
+        <div class="card-value">/viztral</div>
+        <div class="card-meta">Location: <code>/Users/ravikuruganthy/myApps/viztral</code></div>
+      </div>
+    </div>
+
+    <!-- Repository Roles Explanation -->
+    <div class="repo-relation-card">
+      <div class="repo-relation-title">
+        <span>🔄 Repository Management Structure</span>
+      </div>
+      
+      <div class="repo-flow">
+        <div class="repo-box">
+          <h3>📂 website <span class="badge badge-edit">Edit Here</span></h3>
+          <p><strong>Source Code Repository</strong></p>
+          <p>Contains React components, styles, TypeScript code, and configs. All changes, designs, and content edits must be done here.</p>
+        </div>
+        
+        <div class="flow-arrow">➡️</div>
+        
+        <div class="repo-box">
+          <h3>📦 viztral <span class="badge badge-deploy">Deploy From</span></h3>
+          <p><strong>Deployment Repository</strong></p>
+          <p>Mirror of the compiled <code>dist/</code> files. Serves the active domain via GitHub Pages. Do not edit source files here.</p>
+        </div>
+      </div>
+
+      <div class="guide-details">
+        <p><strong>How to manage updates:</strong></p>
+        <ul>
+          <li><strong>To update text, layouts, or assets:</strong> Modify files under the <code>/Users/ravikuruganthy/myApps/website</code> directory. You can test your changes locally using <code>npm run dev</code> inside that directory.</li>
+          <li><strong>To deploy changes live:</strong> Run <code>npm run build</code> inside the <code>website</code> directory, copy the built assets to this <code>viztral</code> folder, and push it to GitHub (as outlined in the steps below).</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Deployment Steps Checklist -->
+    <div id="deployment-steps">
+
+      <!-- Step 1 -->
+      <div class="step-card" id="step-1-card">
+        <div class="step-header">
+          <div class="step-number">1</div>
+          <div class="step-title-area">
+            <div class="step-title">
+              <span>Switch to Source & Build</span>
+              <label class="checkbox-container">
+                <input type="checkbox" onchange="toggleStep(1)">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <p class="step-desc">Go to the local source code folder and run the Vite compiler to bundle your React website. This creates a fresh <code>dist/</code> folder containing production-ready assets.</p>
+          </div>
+        </div>
+        
+        <div class="code-container">
+          <code>cd /Users/ravikuruganthy/myApps/website && npm run build</code>
+          <button class="copy-btn" onclick="copyText(this, 'cd /Users/ravikuruganthy/myApps/website && npm run build')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step-card" id="step-2-card">
+        <div class="step-header">
+          <div class="step-number">2</div>
+          <div class="step-title-area">
+            <div class="step-title">
+              <span>Copy Build Assets to Deployment Repo</span>
+              <label class="checkbox-container">
+                <input type="checkbox" onchange="toggleStep(2)">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <p class="step-desc">Copy all compiled assets (HTML, CSS, JS, and logos) into your deployment directory, overwriting the old static assets.</p>
+          </div>
+        </div>
+        
+        <div class="code-container">
+          <code>cp -R /Users/ravikuruganthy/myApps/website/dist/* /Users/ravikuruganthy/myApps/viztral/</code>
+          <button class="copy-btn" onclick="copyText(this, 'cp -R /Users/ravikuruganthy/myApps/website/dist/* /Users/ravikuruganthy/myApps/viztral/')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step-card" id="step-3-card">
+        <div class="step-header">
+          <div class="step-number">3</div>
+          <div class="step-title-area">
+            <div class="step-title">
+              <span>Push Code to GitHub (Triggers Pages Deploy)</span>
+              <label class="checkbox-container">
+                <input type="checkbox" onchange="toggleStep(3)">
+                <span class="checkmark"></span>
+              </label>
+            </div>
+            <p class="step-desc">Navigate to the deployment workspace, commit the newly copied files, and push them to the GitHub main branch. This triggers GitHub Pages to publish changes live to <code>viztral.ai</code>.</p>
+          </div>
+        </div>
+        
+        <div class="code-container">
+          <code>cd /Users/ravikuruganthy/myApps/viztral && git add . && git commit -m "Deploy latest updates" && git push origin main</code>
+          <button class="copy-btn" onclick="copyText(this, 'cd /Users/ravikuruganthy/myApps/viztral && git add . && git commit -m &quot;Deploy latest updates&quot; && git push origin main')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Info Banner -->
+    <div class="info-banner">
+      <div class="info-icon">⚡</div>
+      <div class="info-text">
+        <strong>Important DNS Safety:</strong> Your DNS management resides in AWS Route 53 (not GoDaddy) to prevent your AWS app (<code>app.viztral.ai</code>) from going down. Do not change nameservers at GoDaddy.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function copyText(button, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.innerHTML;
+        button.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          Copied!
+        `;
+        button.classList.add('copied');
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    function toggleStep(stepNum) {
+      const card = document.getElementById(`step-${stepNum}-card`);
+      if (card) {
+        card.classList.toggle('completed');
+      }
+    }
+  </script>
+</body>
+</html>
